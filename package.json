@@ -1,6 +1,6 @@
 {
   "name": "@makerxstudio/express-bearer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "",
   "author": "MakerX",
@@ -14,7 +14,7 @@
     "node": ">=16.0"
   },
   "scripts": {
-    "build": "rimraf dist coverage && tsc -p tsconfig.build.json",
+    "build": "rimraf dist coverage && tsc -p tsconfig.build.json && copyfiles ./src/express.d.ts dist -f",
     "test": "jest --coverage --passWithNoTests",
     "lint": "eslint ./src/ --ext .ts",
     "lint:fix": "eslint ./src/ --ext .ts --fix"
@@ -24,6 +24,7 @@
     "@types/jest": "^28.1.6",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
+    "copyfiles": "^2.4.1",
     "eslint": "8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-node": "^11.1.0",
