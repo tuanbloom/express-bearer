@@ -1,13 +1,13 @@
 import type { Logger } from '@makerxstudio/node-common'
-import type { Express, RequestHandler, Response } from 'express'
-import { GetPublicKeyOrSecret, verify, VerifyOptions, JwtPayload } from 'jsonwebtoken'
+import type { RequestHandler, Response } from 'express'
+import { GetPublicKeyOrSecret, JwtPayload, verify, VerifyOptions } from 'jsonwebtoken'
 import { JwksClient } from 'jwks-rsa'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
-      user?: Record<string, unknown>
+      user?: JwtPayload
     }
   }
 }
@@ -20,10 +20,8 @@ export interface BearerConfig {
 export type BearerConfigCallback = (hostName: string) => BearerConfig
 
 export interface BearerAuthOptions {
-  app: Express
   config: BearerConfig | BearerConfigCallback
-  protectRoute?: string
-  tokenIsOptional?: boolean
+  tokenIsRequired?: boolean
   logger?: Logger
 }
 
@@ -56,17 +54,11 @@ const verifyForHost = (host: string, jwt: string, config: BearerConfig | BearerC
   })
 }
 
-export const addBearerTokenValidationHandler = ({
-  app,
-  config,
-  protectRoute = '*',
-  tokenIsOptional = false,
-  logger,
-}: BearerAuthOptions): RequestHandler => {
+export const bearerTokenMiddleware = ({ config, tokenIsRequired, logger }: BearerAuthOptions): RequestHandler => {
   const unauthorized = (res: Response) => res.status(401).send('Unauthorized').end()
   const handler: RequestHandler = (req, res, next) => {
     if (!req.headers.authorization?.startsWith('Bearer ')) {
-      if (tokenIsOptional) return next()
+      if (!tokenIsRequired) return next()
       logger?.debug('Bearer token not supplied')
       return unauthorized(res)
     }
@@ -83,12 +75,8 @@ export const addBearerTokenValidationHandler = ({
       })
   }
 
-  if (protectRoute) {
-    app.post(protectRoute, handler)
-    logger?.info(`Bearer token validation handler added to route POST ${protectRoute}`)
-  }
-
   return handler
 }
 
+export default bearerTokenMiddleware
 export { VerifyOptions }
