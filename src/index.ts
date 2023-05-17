@@ -13,8 +13,27 @@ declare global {
 }
 
 export interface BearerConfig {
+  /**
+   * The URL of the JSON Web Keys Sets (JWKS) document
+   */
   jwksUri: string
+
+  /**
+   * The options used to verify incoming JSON Web Tokens (JWTs)
+   */
   verifyOptions: VerifyOptions
+
+  /**
+   * The default behaviour is to require that verifyOptions.issuer is set, for security purposes.
+   * If the intended behaviour is to not validate the issuer, set this property to true.
+   */
+  explicitNoIssuerValidation?: boolean
+
+  /**
+   * The default behaviour is to require that verifyOptions.audience is set, for security purposes.
+   * If the intended behaviour is to not validate the audience, set this property to true.
+   */
+  explicitNoAudienceValidation?: boolean
 }
 
 export type BearerConfigCallback = (hostName: string) => BearerConfig
@@ -28,7 +47,16 @@ export interface BearerAuthOptions {
 const cacheByHost: Record<string, { verifyOptions: VerifyOptions; jwksClient: JwksClient; getKey: GetPublicKeyOrSecret }> = {}
 export const verifyForHost = (host: string, jwt: string, config: BearerConfig | BearerConfigCallback): Promise<JwtPayload> => {
   if (!cacheByHost[host]) {
-    const { jwksUri, verifyOptions } = typeof config === 'function' ? config(host) : config
+    const { jwksUri, verifyOptions, explicitNoIssuerValidation, explicitNoAudienceValidation } = typeof config === 'function' ? config(host) : config
+
+    if (!explicitNoIssuerValidation && !verifyOptions.issuer) {
+      throw new Error('You need to set verifyOptions.issuer, or set explicitNoIssuerValidation to true if you explicitly want to skip issuer validation')
+    }
+
+    if (!explicitNoAudienceValidation && !verifyOptions.audience) {
+      throw new Error('You need to set verifyOptions.audience, or set explicitNoAudienceValidation to true if you explicitly want to skip audience validation')
+    }
+
     const jwksClient = new JwksClient({ jwksUri })
     cacheByHost[host] = {
       jwksClient,
@@ -70,7 +98,7 @@ export const bearerTokenMiddleware = ({ config, tokenIsRequired, logger }: Beare
         next()
       })
       .catch((error: unknown) => {
-        logger?.error('Bearer token verfication failed', { host: req.headers.host, error })
+        logger?.error('Bearer token verification failed', { host: req.headers.host, error })
         unauthorized(res)
       })
   }
