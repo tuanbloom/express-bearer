@@ -54,10 +54,12 @@ The middleware will:
 
 JWT handling `config`:
 
-| Option          | Description                                                                                                                        |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `jwksUri`       | The endpoint to load signing keys via [jwks-rsa](https://github.com/auth0/node-jwks-rsa#readme)                                    |
-| `verifyOptions` | The options passed into [jwt.verify](https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback) |
+| Option                         | Description                                                                                                                                                                                                                                                |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `jwksUri`                      | The endpoint to load signing keys via [jwks-rsa](https://github.com/auth0/node-jwks-rsa#readme)                                                                                                                                                            |
+| `verifyOptions`                | The options passed into [jwt.verify](https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback)                                                                                                                         |
+| `explicitNoIssuerValidation`   | Optional. The default behaviour is to enforce issuer validation through `verifyOptions.issuer` to avoid security issues through misconfiguration.<br>If it's intentional to not validate the issuer of incoming tokens, set this property to `true`.       |
+| `explicitNoAudienceValidation` | Optional. The default behaviour is to enforce audience validation through `verifyOptions.audience` to avoid security issues through misconfiguration.<br>If it's intentional to not validate the audience of incoming tokens, set this property to `true`. |
 
 ### Multitenant apps
 
