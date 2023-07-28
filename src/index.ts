@@ -1,4 +1,4 @@
-import type { Logger } from '@makerx/node-common'
+import type { Logger } from '@tuanbloom/node-common'
 import type { Request, RequestHandler, Response } from 'express'
 import { GetPublicKeyOrSecret, JwtPayload, verify, VerifyOptions } from 'jsonwebtoken'
 import { JwksClient } from 'jwks-rsa'

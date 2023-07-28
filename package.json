@@ -1,6 +1,6 @@
 {
   "name": "@tuanbloom/express-bearer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "description": "",
   "author": "MakerX",
@@ -27,7 +27,8 @@
     "test": "jest --coverage --passWithNoTests",
     "lint": "eslint ./src/ --ext .ts",
     "lint:fix": "eslint ./src/ --ext .ts --fix",
-    "audit": "better-npm-audit audit"
+    "audit": "better-npm-audit audit",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.0",
@@ -53,7 +54,7 @@
     "express": "*"
   },
   "dependencies": {
-    "@tuanbloom/node-common": "^1.0.3",
+    "@tuanbloom/node-common": "^1.0.5",
     "jsonwebtoken": "^9.0.0",
     "jwks-rsa": "^3.0.1"
   },
