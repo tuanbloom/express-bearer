@@ -1,12 +1,12 @@
 {
   "name": "@tuanbloom/express-bearer",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": false,
   "description": "",
   "author": "MakerX",
   "license": "MIT",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "engines": {
     "node": ">=16.0"
   },
